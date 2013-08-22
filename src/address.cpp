@@ -81,19 +81,24 @@ bool payment_address::set_encoded(const std::string& encoded_address)
     return true;
 }
 
-std::string payment_address::encoded() const
+std::string payment_address::encoded(uint8_t version_byte) const
 {
     data_chunk unencoded_address;
     BITCOIN_ASSERT(
         type_ == payment_type::pubkey_hash ||
         type_ == payment_type::script_hash);
     // Type, Hash, Checksum doth make thy address
-    unencoded_address.push_back(version());
+    unencoded_address.push_back(version_byte);
     extend_data(unencoded_address, hash_);
     uint32_t checksum = generate_sha256_checksum(unencoded_address);
     extend_data(unencoded_address, uncast_type(checksum));
     BITCOIN_ASSERT(unencoded_address.size() == 25);
     return encode_base58(unencoded_address);
+}
+
+std::string payment_address::encoded() const
+{
+    return encoded(version());
 }
 
 uint8_t payment_address::version() const

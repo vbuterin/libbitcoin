@@ -47,6 +47,7 @@ public:
 
     bool set_encoded(const std::string& encoded_address);
     std::string encoded() const;
+    std::string encoded(uint8_t version_byte) const;
 
     uint8_t version() const;
 
